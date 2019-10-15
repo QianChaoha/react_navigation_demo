@@ -109,6 +109,7 @@ class TabBarComponent extends React.Component {
     }
 
     render() {
+        //routes 路由数组
         const { routes, index } = this.props.navigation.state;
         if (routes[index].params) {
             const { theme } = routes[index].params;
@@ -122,9 +123,11 @@ class TabBarComponent extends React.Component {
          * https://github.com/react-navigation/react-navigation/issues/4297
          */
         return (
+            //自定义底部tabBar
+            //通过this.props.navigation.state里的params动态设置theme
             <BottomTabBar
                 {...this.props}
-                activeTintColor={this.theme.tintColor || this.props.activeTintColor}
+                activeTintColor={this.theme.tintColor || this.props.activeTintColor}//优先用主题里的颜色,没有的话就用默认的activeTintColor
             />
         );
     }

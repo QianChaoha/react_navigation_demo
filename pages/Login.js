@@ -19,7 +19,7 @@ export default class Login extends React.Component {
             <Button
                 title="Login"
                 onPress={() => {
-                    navigation.navigate('App');
+                    navigation.navigate('Main');
                 }}
             />
         </View>

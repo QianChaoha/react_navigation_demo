@@ -1,5 +1,5 @@
 import React from 'react';
-import { createDrawerNavigator, createStackNavigator, DrawerItems, SafeAreaView } from 'react-navigation';
+import { createSwitchNavigator, createDrawerNavigator, createStackNavigator, DrawerItems, SafeAreaView } from 'react-navigation';
 import { createBottomTabNavigator, createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import Page1 from '../pages/Page1'
 import Page2 from '../pages/Page2'
@@ -9,11 +9,18 @@ import Page5 from '../pages/Page5'
 import Page6 from '../pages/Page6'
 import Page7 from '../pages/Page7'
 import Page8 from '../pages/Page8'
+import Login from '../pages/Login'
 import HomePage from '../pages/HomePage'
 import { Button, Platform, ScrollView } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DynamicTabNavigator from "./DynamicTabNavigator";
+import { createAppContainer } from 'react-navigation'
+//==========================redux==================================
+import { connect } from 'react-redux';
+import { createReactNavigationReduxMiddleware, createReduxContainer } from 'react-navigation-redux-helpers';
+export const rootCom = 'Init';//设置根路由
+//==========================redux==================================
 
 export const DrawerNav = createDrawerNavigator({
     Page4: {
@@ -163,7 +170,7 @@ export const BottomTabNavigator = createBottomTabNavigator({//在这里配置页
         activeTintColor: Platform.OS === 'ios' ? '#e91e63' : '#f00',
     }
 });
-export const AppStackNavigator = createStackNavigator({
+const AppStackNavigator = createStackNavigator({
     HomePage: {
         screen: HomePage
     },
@@ -232,3 +239,42 @@ export const AppStackNavigator = createStackNavigator({
         // header: null,// 可以通过将header设为null 来禁用StackNavigator的Navigation Bar
     }
 });
+
+const AuthStack = createStackNavigator({
+    Login: {
+        screen: Login
+    },
+}, {
+    navigationOptions: {
+        // header: null,// 可以通过将header设为null 来禁用StackNavigator的Navigation Bar
+    }
+});
+//配置了两个路由,默认显示Auth: AuthStack,跳到 App: AppStack后，上一页面就回不去了。可用于登录场景  
+export const RootNavigator = createSwitchNavigator(
+    {
+        Init: AuthStack,
+        Main: AppStackNavigator,
+    },
+    {
+        navigationOptions: {
+            header: null,// 可以通过将header设为null 来禁用StackNavigator的Navigation Bar
+        }
+    }
+);
+//====================================redux==================================================
+/** * 1.初始化react-navigation与redux的中间件， * 该方法的一个很大的作用就是为createReduxContainer的key设置actionSubscribers(行为订阅者) * 设置订阅者@https://github.com/react-navigation/react-navigation-redux-helpers/blob/master/src/middleware.js#L29 * 检测订阅者是否存在@https://github.com/react-navigation/react-navigation-redux-helpers/blob/master/src/middleware.js#L97 * @type {Middleware} */
+export const middleware = createReactNavigationReduxMiddleware(
+    state => state.nav,
+    'root'
+);
+
+/** * 2.将根导航器组件传递给 createReduxContainer 函数, * 并返回一个将navigation state 和 dispatch 函数作为 props的新组件； * 注意：要在createReactNavigationReduxMiddleware之后执行 */
+const AppWithNavigationState = createReduxContainer(RootNavigator, 'root');
+
+/** * State到Props的映射关系 * @param state */
+const mapStateToProps = state => ({
+    state: state.nav,//v2
+});
+/** * 3.连接 React 组件与 Redux store */
+export default connect(mapStateToProps)(AppWithNavigationState);
+//====================================redux==================================================
