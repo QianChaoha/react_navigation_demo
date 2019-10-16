@@ -5,8 +5,9 @@ import {
     Button,
     StyleSheet
 } from 'react-native';
+import { connect } from 'react-redux';
 
-export default class Login extends React.Component {
+ class Login extends React.Component {
     //也可在这里定义每个页面的导航属性，这里的定义会覆盖掉别处的定义
     // static navigationOptions = {
     //     title: 'Page1',
@@ -31,3 +32,9 @@ const styles = StyleSheet.create({
         color: 'white'
     }
 });
+
+const mapDispatchToProps = dispatch => ({
+    onThemeInit: () => dispatch(actions.onThemeInit()),
+});
+
+export default connect(null, mapDispatchToProps)(Login);

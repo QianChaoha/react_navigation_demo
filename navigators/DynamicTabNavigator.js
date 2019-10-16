@@ -1,14 +1,11 @@
 import React from 'react';
 import Page1 from '../pages/Page1'
-import Page2 from '../pages/Page2'
 import Page3 from '../pages/Page3'
 import { Platform,View } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { BottomTabBar, createBottomTabNavigator } from 'react-navigation-tabs';
 import { createAppContainer } from "react-navigation";
 import Page4 from "../pages/Page4";
-import { BottomTabNavigator } from './AppNavigators';
-
 const TABS = {//在这里配置页面的路由
     Page1: {
         screen: Page1,
